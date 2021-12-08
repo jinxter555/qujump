@@ -1,0 +1,30 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="todo-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <label>assign employee :</label>
+    <%= select f, "assignto_entity_id", Enum.map(@employees, &{&1.name, &1.entity_id}),  
+selected:  if @todo.assignto_entity_id, do: @todo.assignto_entity_id, else: 0  %> <br/>
+
+    <%= label f, :description %>
+    <%= textarea f, :description %>
+    <%= error_tag f, :description %><br/>
+  
+    <%= label f, :state %>
+    <%= number_input f, :state %>
+    <%= error_tag f, :state %><br/>
+  
+    <%= hidden_input f, :type %>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>

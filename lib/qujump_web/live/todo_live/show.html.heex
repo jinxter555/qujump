@@ -1,0 +1,27 @@
+<h1>Show Todo</h1>                                                              
+      
+<%= if @live_action in [:edit] do %>    
+  <%= live_modal QujumpWeb.TodoLive.FormComponent,    
+    id: @todo.id,    
+    title: @page_title,    
+    action: @live_action,    
+    todo: @todo,     
+    current_user: @current_user,
+    return_to: Routes.todo_show_path(@socket, :show, @todo) %>    
+<% end %>    
+      
+current_user <%= @current_user.email %>
+<ul>    
+  <li>    
+    <strong>description:</strong>    
+    <%= @todo.description %>    
+  </li>
+
+  <li>    
+    <strong>state:</strong>    
+    <%= @todo.state %>    
+  </li>
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.todo_show_path(@socket, :edit, @todo), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.todo_index_path(@socket, :index) %></span>

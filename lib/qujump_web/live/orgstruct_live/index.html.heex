@@ -1,0 +1,48 @@
+<%= if @live_action in [:new, :edit] do %>
+  <%=  live_modal QujumpWeb.OrgstructLive.FormComponent,
+    id: @orgstruct.id || :new,
+    title: @page_title,
+    action: @live_action,
+    orgstruct: @orgstruct,
+    current_user: @current_user,
+    parent_entity_id: @parent_entity_id,
+    return_to: Routes.orgstruct_index_path(@socket, :index)
+  %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="orgstructs">
+    <%= for orgstruct <- @orgstructs do %>
+      <tr id={"orgstruct-#{orgstruct.id}"}>
+        <td> <%=  orgstruct.name %></td>
+        <td> <%=  orgstruct.type %></td>
+        <td>
+          <span><%= live_redirect "Show", to: Routes.orgstruct_show_path(@socket, :show, orgstruct) %></span> 
+          <span><%= live_patch "Edit", to: Routes.orgstruct_index_path(@socket, :edit, orgstruct) %></span>
+          <span><%= live_patch "Employees", to: Routes.employee_index_path(@socket, :list, orgstruct) %></span>
+          <span><%= live_patch "new member", to: Routes.orgstruct_member_index_path(@socket, :new, orgstruct) %></span>
+          <span><%= link "Delete", to: "#", 
+                    phx_click: "delete", 
+                    phx_value_id: orgstruct.id
+                    #data: [confirm: "Are you sure?"] 
+                %>
+          </span>
+          <span><%= live_patch "New Department", to: Routes.orgstruct_index_path(@socket, :new, type: :department, orgstruct_id: orgstruct.id) %></span>
+
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Company", to: Routes.orgstruct_index_path(@socket, :new, type: :company) %></span>
+<span><%= live_patch "New Team", to: Routes.orgstruct_index_path(@socket, :new, type: :team) %></span>
+
+
+

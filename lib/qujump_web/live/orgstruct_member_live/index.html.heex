@@ -1,0 +1,22 @@
+<h1> Listing members</h1>
+
+    
+<table>    
+  <thead>    
+    <tr>    
+      <th>Name</th>    
+    
+      <th></th>    
+    </tr>    
+  </thead>    
+  <tbody id="companies">    
+    <%= for member <- @orgstruct_members do %>                                         
+      <tr id={"m-#{member.id}"}>    
+        <td><%= employee_name(member.member_id) %></td>    
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<span><%= live_patch "add member", to: Routes.orgstruct_member_index_path(@socket, :new, @orgstruct) %></span>

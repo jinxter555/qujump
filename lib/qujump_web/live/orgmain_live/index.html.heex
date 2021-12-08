@@ -1,0 +1,15 @@
+<div>
+
+<.live_component module={OrgstructComponent}
+id="#orgstruct-cmp"
+orgstructs={@orgstructs}/>
+
+<%= if @orgstruct && @orgstruct.type in [:company, :corporate_group] do %>
+  <.live_component module={EmployeesComponent} id="employee-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} /> 
+<% end %>
+<%= if @orgstruct && @orgstruct.type in [:team] do %>
+  <.live_component module={MembersComponent} id="members-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} /> 
+<% end %>
+                                             
+
+</div>

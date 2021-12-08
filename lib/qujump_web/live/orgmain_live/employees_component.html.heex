@@ -1,0 +1,35 @@
+<div id={@id}>
+<%= if @employee_action in [:new, :edit] do %>
+  <%= live_modal QujumpWeb.EmployeeLive.FormComponent,
+id: @employee.id || :new,
+title: @page_title,   
+employee: @employee,    
+orgstruct: @orgstruct,   
+orgstruct_id: @orgstruct.id,
+action: @employee_action,
+current_user: @current_user,
+#reset_id: "employee-cmp",
+reset_id: @id,
+reset_cmp: __MODULE__,
+return_to: Routes.orgmain_index_path(@socket, :index) %>
+<% end %>
+    
+  <span><%= live_patch "New", to: "#", phx_click: "new", phx_value_id: @orgstruct.id, phx_target: @myself %></span>
+
+
+<table>
+<tbody >
+    <%= for employee <- @employees do %>                                                        
+      <tr id={"employee-#{employee.id}"}>    
+        <td><%= employee.name %></td>    
+        <td>    
+          <span><%= live_patch "Edit", to: Routes.employee_index_path(@socket, :edit, employee) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: employee.id, data: [confirm: "Are you sure?"] %></span>
+        </td>    
+      </tr>    
+    <% end %>    
+  </tbody>    
+</table>
+
+
+</div>

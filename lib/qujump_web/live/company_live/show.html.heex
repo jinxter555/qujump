@@ -1,0 +1,26 @@
+<h1>Show Company</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal QujumpWeb.CompanyLive.FormComponent,
+    id: @company.id,
+    # title: @page_title,
+    title: "hello world",
+    action: @live_action,
+    company: @company,
+    return_to: Routes.company_show_path(@socket, :show, @company) %>
+<% end %>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @company.name %>
+  </li>
+
+</ul>
+
+
+<span><%= live_patch "Edit", to: Routes.company_show_path(@socket, :edit, @company), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.company_index_path(@socket, :index) %></span>
+
+<%= live_patch "New Department", to: Routes.department_index_path(@socket, :new, @company) %>
+

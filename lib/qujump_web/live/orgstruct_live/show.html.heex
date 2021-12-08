@@ -1,0 +1,24 @@
+<h1> Show Orgstruct</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%=  live_modal QujumpWeb.OrgstructLive.FormComponent,
+    id: @orgstruct.id,
+    title: "hello world",
+    action: @live_action,
+    orgstruct: @orgstruct,
+    return_to: Routes.orgstruct_show_path(@socket, :show, @orgstruct) %>
+<% end %>
+
+     
+<ul>    
+  <li>    
+    <strong>Name:</strong>    
+    <%= @orgstruct.name %>    
+  </li>    
+  <li>    
+    <%= @orgstruct.type %>    
+  </li>    
+</ul>    
+      
+<span><%= live_patch "Edit", to: Routes.orgstruct_show_path(@socket, :edit, @orgstruct), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.orgstruct_index_path(@socket, :index) %></span>

@@ -1,0 +1,49 @@
+
+<h1>Listing Todos</h1>    
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal QujumpWeb.TodoLive.FormComponent,
+id: @todo.id || :new,
+title: @page_title,
+todo: @todo,
+action: @live_action,
+current_user: @current_user,
+return_to: Routes.todo_index_path(@socket, :index) %>
+<% end %>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>owner</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id="todos">
+    <%= for todo <- @todos do %>
+      <tr id={"todo-#{todo.id}"}>
+        <td><%= todo.description %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.todo_show_path(@socket, :show, todo) %></span>
+          <span><%= live_patch "Edit", to: Routes.todo_index_path(@socket, :edit, todo) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: todo.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<br/>
+<%= alias Phoenix.LiveView.JS %>
+<%= ctag ="h3 underline highlight"%>
+<%= live_patch "new todo",    to: Routes.todo_index_path(@socket, :new) %>
+
+<div id="item">My Item</div>
+<br/>
+<br/>
+<button phx-click={JS.add_class(ctag, to: "#item")}>
+  highlight!
+</button>

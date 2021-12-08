@@ -1,0 +1,10 @@
+ <div >
+   <%= for orgstruct <- @orgstructs do %>
+      <tr id={"orgstruct-#{orgstruct.id}"}>
+        <td><%=  orgstruct.name %></td>
+        <td><.orgstruct_link orgstruct={orgstruct} /></td>
+      <br/>
+      </tr>
+
+   <% end %>
+</div>
