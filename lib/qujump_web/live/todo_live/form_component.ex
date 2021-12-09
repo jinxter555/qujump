@@ -29,7 +29,11 @@ defmodule QujumpWeb.TodoLive.FormComponent do
   end
 
   defp save_todo(socket, :edit, todo_params) do
+    IO.inspect todo_params
+
     attrs = QujumpWeb.CoreHelper.setup_todo_save_params(socket, todo_params)
+    IO.puts "attrs save params: "
+    IO.inspect attrs
     Work.update_todo(socket.assigns.todo, attrs) 
     |> case do
       {:ok, _todo} ->

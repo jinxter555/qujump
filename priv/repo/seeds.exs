@@ -40,11 +40,12 @@ alias Qujump.Orgstructs
   name: "company 1",
   type: :company
 })
+
 {:ok, c2} = Orgstructs.create_orgstruct(%{employee_id: e2.id, name: "company 2", type: :company})
 
 {:ok, c0} = Orgstructs.create_orgstruct(%{employee_id: e0.id, name: "company Alpha", type: :company})
 
-{:ok, t1} = Orgstructs.create_orgstruct(%{employee_id: e0.id, name: "team 1", type: :team}, c1.entity_id)
+{:ok, t1} = Orgstructs.create_orgstruct(%{employee_id: e0.id, name: "team 1", type: :team}, c1.id)
 
 Qujump.Work.create_todo(%{
   owner_entity_id: e0.id,
@@ -73,3 +74,11 @@ for employee <- employeesT do
 end
 
 
+for i <- 1..10 do
+  Enum.each([c0, c1, c2], fn c -> 
+    Qujump.Work.create_todo(%{owner_entity_id: nil,
+      description: Faker.Lorem.sentence(),
+      orgstruct_id: c.id,
+      type: :task})
+  end)
+end

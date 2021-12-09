@@ -55,7 +55,14 @@ defmodule Qujump.Work do
   @spec create_todo(%{owner_entity_id: integer, description: String.t(), type: atom()}) :: {atom(), %Todo{}}
   def create_todo(%{owner_entity_id: owner_entity_id, description: description, type: type} = attrs) do
     Repo.transaction(fn ->
-      owner_entity = Entities.get_entity!(owner_entity_id)
+
+      #owner_entity = Entities.get_entity!(owner_entity_id)
+
+      owner_entity =
+      if owner_entity_id,
+        do: Entities.get_entity!(owner_entity_id),
+      else: nil
+
       {:ok, entity} = Entities.create_entity(%{type: :todo})
       
       todo = Map.merge(%Todo{type: type, description: description}, attrs)

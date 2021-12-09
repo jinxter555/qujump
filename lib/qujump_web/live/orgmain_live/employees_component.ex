@@ -36,7 +36,6 @@ defmodule EmployeesComponent do
       update(%{orgstruct_id: orgstruct_id}, socket)
   end
 
-    
   @impl true
   def handle_event("new", %{"id" => orgstruct_id} = _employee_params, socket) do
     orgstruct = Orgstructs.get_orgstruct!(orgstruct_id)
@@ -47,6 +46,7 @@ defmodule EmployeesComponent do
     |> assign(:page_title, "New Employee")
     |> assign(:orgstruct, orgstruct)}
   end
+    
 
   def handle_info(:reset, socket) do
     {:noreply, socket

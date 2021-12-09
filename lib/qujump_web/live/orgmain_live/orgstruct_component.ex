@@ -18,9 +18,14 @@ defmodule OrgstructComponent do
           Team
         </button>
     """
+      :department ->
+    ~H"""
+        <button phx-click="list_orgstruct_members" phx-value-id={orgstruct.id}>
+          dep
+        </button>
+    """
     end
   end
-
 
 
 end

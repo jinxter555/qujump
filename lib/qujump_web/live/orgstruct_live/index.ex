@@ -31,12 +31,11 @@ defmodule QujumpWeb.OrgstructLive.Index do
     type = String.to_atom(params["type"])
     parent_orgstruct = 
       Orgstructs.get_orgstruct!(orgstruct_id) 
-      |> Qujump.Repo.preload([:entity])
 
     socket
     |> assign(:page_title, "New Hier #{type} Org")
     |> assign(:orgstruct, %Orgstruct{type: type})
-    |> assign(:parent_entity_id, parent_orgstruct.entity.id)
+    |> assign(:parent_orgstruct, parent_orgstruct)
   end
 
   defp apply_action(socket, :new, params) do
@@ -44,7 +43,7 @@ defmodule QujumpWeb.OrgstructLive.Index do
     socket
     |> assign(:page_title, "New Org")
     |> assign(:orgstruct, %Orgstruct{type: type})
-    |> assign(:parent_entity_id, nil)
+    |> assign(:parent_orgstruct, nil)
   end
 
 
@@ -55,7 +54,7 @@ defmodule QujumpWeb.OrgstructLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" =>id}, socket) do
-    orgstruct = Orgstructs.get_orgstruct!(id) |> Qujump.Repo.preload([:entity])
+    orgstruct = Orgstructs.get_orgstruct!(id)
     {:ok, _} = Orgstructs.delete_orgstruct(orgstruct)
     {:noreply,
       socket

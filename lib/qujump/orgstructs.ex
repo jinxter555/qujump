@@ -43,6 +43,14 @@ defmodule Qujump.Orgstructs do
     o = get_orgstruct!(id)
     o.entity_id
   end
+  def get_orgstruct_parent(id) do
+    parent_entity = get_orgstruct!(id) |> Repo.preload([entity: :parent])
+
+    query = from org in Orgstruct,
+      where: org.entity_id == ^parent_entity.id
+
+    hd Repo.all(query)
+  end
 
   def get_orgstruct_with_members(id) do
     _orgstruct = get_orgstruct!(id) |> Repo.preload([entity: :members])
@@ -56,7 +64,7 @@ defmodule Qujump.Orgstructs do
   ## Examples
   ## create_orgstruct(%{employee_id, name, type: [:company | :department | :corporate_group]})
   
-      iex> create_orgstruct(%{employee_id: 123, name: "my company", type: :company}, parent_id \\ nil)
+      iex> create_orgstruct(%{employee_id: 123, name: "my company", type: :company}, parent_orgstruct_id \\ nil)
       {:ok, %Employee{}}
 
       iex> create_orgstruct(%{field: bad_value})
@@ -64,10 +72,19 @@ defmodule Qujump.Orgstructs do
 
   """
   @spec create_orgstruct(%{employee_id: integer, name: String.t(), type: atom()}) :: {atom(), %Orgstruct{}}
-  def create_orgstruct(%{employee_id: employee_id, name: name, type: type} = _attr, parent_entity_id \\ nil) do
+  def create_orgstruct(%{employee_id: employee_id, name: name, type: type} = _attr, parent_orgstruct_id \\ nil) do
 
     Repo.transaction(fn ->
       employee = Employees.get_employee!(employee_id)  |> Repo.preload([:orgstruct, :entity])
+
+      parent_entity_id = 
+        if parent_orgstruct_id do 
+          IO.puts "parent orgstruct id: "
+          IO.inspect parent_orgstruct_id
+          get_orgstruct_entity_id!(parent_orgstruct_id)
+        else 
+          nil
+        end
 
       # add parent org
       {:ok, entity} = Entities.create_entity(%{type: :org, parent_id: parent_entity_id})
