@@ -19,7 +19,8 @@ defmodule MembersComponent do
       else: nil
 
     {employees, members } = if orgstruct do
-      orgstruct_parent = Orgstructs.get_orgstruct_parent(orgstruct_id)
+      # may need employees_orgstruct_id: to replace parent
+      orgstruct_parent = Orgstructs.get_orgstruct_parent!(orgstruct_id)
       { Employees.list_employees(orgstruct_id: orgstruct_parent.id),
         Employees.list_employee_members(orgstruct_id: orgstruct.id)}
     else 

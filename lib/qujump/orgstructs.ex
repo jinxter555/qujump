@@ -7,6 +7,7 @@ defmodule Qujump.Orgstructs do
   alias Qujump.Repo
   alias Qujump.Employees
   alias Qujump.Entities
+  alias Qujump.Entities.Entity
 
 
   alias Qujump.Organizations.Orgstruct
@@ -43,7 +44,7 @@ defmodule Qujump.Orgstructs do
     o = get_orgstruct!(id)
     o.entity_id
   end
-  def get_orgstruct_parent(id) do
+  def get_orgstruct_parent!(id) do
     parent_entity = get_orgstruct!(id) |> Repo.preload([entity: :parent])
 
     query = from org in Orgstruct,
@@ -52,10 +53,8 @@ defmodule Qujump.Orgstructs do
     hd Repo.all(query)
   end
 
-  def get_orgstruct_with_members(id) do
-    _orgstruct = get_orgstruct!(id) |> Repo.preload([entity: :members])
-    # entity = Entities.get_entity!(orgstruct.entity_id) |> preload([:members])
-    
+  def get_orgstruct_with_members!(id) do
+    get_orgstruct!(id) |> Repo.preload([entity: :members])
   end
 
   @doc """
@@ -157,10 +156,32 @@ defmodule Qujump.Orgstructs do
   end
 
 
-  def list_members_by_orgstruct_id(orgstruct_id) do
-    orgstruct = get_orgstruct_with_members(orgstruct_id)
+  def list_members(id) do
+    orgstruct = get_orgstruct_with_members!(id)
     orgstruct.entity.members
   end
+
+  def list_children(id) do
+    orgstruct = get_orgstruct!(id)
+    
+    query = from org in Orgstruct,
+     join: e in Entity, 
+      on: e.id == org.entity_id,
+      where: e.parent_id == ^orgstruct.entity_id
+
+    Repo.all(query)
+
+  end
+
+  def build_nested_children(orgmap, id) do
+    orgmap  = if orgmap==%{}, do: get_orgstruct!(id) |>Map.from_struct()
+    children = list_children(id)
+  end
+
+  defp org_id_name_type(orgstruct) do
+    %{}
+  end
+
 
 
   def insert_orgstruct_member(orgstruct_id, employee_id) do

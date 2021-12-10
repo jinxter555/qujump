@@ -40,14 +40,6 @@ defmodule QujumpWeb.Router do
     # live "/companies/:id/show/create_department", DepartmentLive.Index, :new
 
 
-    live "/departments", DepartmentLive.Index, :index
-    # live "/departments/new", DepartmentLive.Index, :new
-    live "/departments/:company_id/new", DepartmentLive.Index, :new
-    live "/departments/:id/edit", DepartmentLive.Index, :edit
-
-    live "/departments/:id", DepartmentLive.Show, :show
-    live "/departments/:id/show/edit", DepartmentLive.Show, :edit
-
     live "/todos", TodoLive.Index, :index
     live "/todos/new", TodoLive.Index, :new
     live "/todos/:id/edit", TodoLive.Index, :edit
@@ -74,6 +66,8 @@ defmodule QujumpWeb.Router do
 
     live "/orgmain", OrgmainLive.Index, :index
     live "/orgmain/new", OrgmainLive.Index, :new
+    live "/orgmain/:orgstruct_id", OrgmainLive.Show, :show
+    live "/orgmain/:orgstruct_id/employees", OrgmainLive.Index, :new
 
 
 

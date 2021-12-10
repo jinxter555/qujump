@@ -30,7 +30,9 @@ defmodule QujumpWeb.CoreHelper do
     params
     |> Map.new(fn {k, v} -> 
       case k do
-        "state" -> {String.to_atom(k), String.to_integer(v)}
+        "state" -> 
+          vv = if v == "", do: "0", else: v
+          {String.to_atom(k), String.to_integer(vv)}
         "type" -> {String.to_atom(k), String.to_atom(v)}
         "assignto_entity_id" -> {String.to_atom(k), String.to_integer(v)}
         "assignby_entity_id" -> {String.to_atom(k), String.to_integer(v)}

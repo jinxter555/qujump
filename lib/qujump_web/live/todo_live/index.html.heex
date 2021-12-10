@@ -10,6 +10,18 @@ current_user: @current_user,
 return_to: Routes.todo_index_path(@socket, :index) %>
 <% end %>
 
+<br/>
+<%= alias Phoenix.LiveView.JS %>
+<%= ctag ="h3 underline highlight"%>
+<%= live_patch "new todo",    to: Routes.todo_index_path(@socket, :new) %>
+
+<div id="item">My Item</div>
+<br/>
+<br/>
+<button phx-click={JS.add_class(ctag, to: "#item")}>
+  highlight!
+</button>
+
 
 <table>
   <thead>
@@ -36,14 +48,3 @@ return_to: Routes.todo_index_path(@socket, :index) %>
 </table>
 
 
-<br/>
-<%= alias Phoenix.LiveView.JS %>
-<%= ctag ="h3 underline highlight"%>
-<%= live_patch "new todo",    to: Routes.todo_index_path(@socket, :new) %>
-
-<div id="item">My Item</div>
-<br/>
-<br/>
-<button phx-click={JS.add_class(ctag, to: "#item")}>
-  highlight!
-</button>

@@ -54,6 +54,7 @@ defmodule Qujump.MixProject do
       {:ecto_enum, "~> 1.4"},
       {:ex_machina, "~> 2.7.0"},
       {:faker, "~> 0.16.0"},
+      {:iteraptor, "~> 1.13.1"},
       {:dart_sass, "~> 0.3", runtime: Mix.env() == :dev},
 
 

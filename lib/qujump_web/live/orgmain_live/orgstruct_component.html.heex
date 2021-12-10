@@ -1,7 +1,7 @@
  <div >
    <%= for orgstruct <- @orgstructs do %>
       <tr id={"orgstruct-#{orgstruct.id}"}>
-        <td><%=  orgstruct.name %></td>
+        <td><%=  link "#{orgstruct.name}", to: Routes.orgmain_show_path(@socket, :show, orgstruct) %></td>
         <td><.orgstruct_link orgstruct={orgstruct} /></td>
       <br/>
       </tr>

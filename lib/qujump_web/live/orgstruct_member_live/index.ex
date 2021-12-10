@@ -10,7 +10,7 @@ defmodule QujumpWeb.OrgstructMemberLive.Index do
     {:ok,
       socket
       |> assign(:orgstruct_members, 
-        Orgstructs.list_members_by_orgstruct_id(orgstruct_id))
+        Orgstructs.list_members(orgstruct_id))
       |> assign(:orgstruct, Orgstructs.get_orgstruct!(orgstruct_id))
     }
   end
