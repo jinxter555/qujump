@@ -213,4 +213,26 @@ defmodule Qujump.Entities do
   def change_entity_member(%EntityMember{} = entity_member, attrs \\ %{}) do
     EntityMember.changeset(entity_member, attrs)
   end
+  
+  def nested_children(id) do
+
+    entity_tree_initial_query = Entity
+    |> where([e], e.id == ^id)
+  
+    entity_tree_recursion_query = Entity
+    |> join(:inner, [e], t in "tree", on: t.id == e.parent_id)
+  
+    entity_tree_query = entity_tree_initial_query
+    |> union_all(^entity_tree_recursion_query)
+
+    #entity_tree_recursion_query
+    #entity_tree_initial_query
+    
+    entity_tree_query
+    |> recursive_ctes(true)
+    |> with_cte("tree", as: ^entity_tree_query)
+    # |> join(:left, [], t in "tree", on: t.id == ^id)
+    |> Repo.all()
+
+  end
 end

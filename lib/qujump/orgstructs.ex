@@ -173,16 +173,24 @@ defmodule Qujump.Orgstructs do
 
   end
 
-  def build_nested_children(orgmap, id) do
-    orgmap  = if orgmap==%{}, do: get_orgstruct!(id) |>Map.from_struct()
-    children = list_children(id)
+  def build_nested_children(id) do
+    entity_tree_initial_query = Entity
+    |> where([e], e.id == ^id)
+  
+    entity_tree_recursion_query = Entity
+    |> join(:inner, [e], t in "tree", on: t.id == e.parent_id)
+  
+    entity_tree_query = entity_tree_initial_query
+    |> union_all(^entity_tree_recursion_query)
+
+    Orgstruct
+    |> recursive_ctes(true)
+    |> with_cte("tree", as: ^entity_tree_query)
+    |> join(:inner, [o], t in "tree", on: t.id == o.entity_id)
+    |> Repo.all()
+    |> Repo.preload([entity: :parent])
+
   end
-
-  defp org_id_name_type(orgstruct) do
-    %{}
-  end
-
-
 
   def insert_orgstruct_member(orgstruct_id, employee_id) do
     employee_entity_id = Employees.get_employee_entity_id!(employee_id)
