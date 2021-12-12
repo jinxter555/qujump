@@ -173,9 +173,34 @@ defmodule Qujump.Orgstructs do
 
   end
 
-  def build_nested_children(id) do
+  def list_nested_map(orgstruct_id) do
+    descents = list_descendants(orgstruct_id)
+    descents
+  end
+
+  def build_nested_map([], _, _), do: []
+
+  def build_nested_map([head|tail], nil, str) do
+    v = str <> inspect head.name
+    IO.puts v
+    build_nested_map(tail, head.entity_id, str <> "|---- ")
+  end
+
+  def build_nested_map([_head| tail] = l, parent_id, str) do
+    Enum.each(l, fn x -> 
+      if x.entity.parent_id == parent_id do
+        v = str <> inspect x.name
+        IO.puts v
+        build_nested_map(tail, x.entity_id, str <> "|---- ")
+      end
+    end)
+  end
+  
+  def list_descendants(orgstruct_id) do
+    orgstruct = get_orgstruct!(orgstruct_id)
+
     entity_tree_initial_query = Entity
-    |> where([e], e.id == ^id)
+    |> where([e], e.id == ^orgstruct.entity_id)
   
     entity_tree_recursion_query = Entity
     |> join(:inner, [e], t in "tree", on: t.id == e.parent_id)
