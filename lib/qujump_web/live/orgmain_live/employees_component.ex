@@ -26,6 +26,7 @@ defmodule EmployeesComponent do
       |> assign(:employees,  employees)
       |> assign(:orgstruct, orgstruct)
       |> assign(:employee_action, :nil)
+      |> assign(:page_title, "employee component")
       |> assign(assigns)    
     }
   end    
@@ -38,13 +39,15 @@ defmodule EmployeesComponent do
 
   @impl true
   def handle_event("new", %{"id" => orgstruct_id} = _employee_params, socket) do
+    IO.inspect socket
     orgstruct = Orgstructs.get_orgstruct!(orgstruct_id)
 
     {:noreply, socket
     |> assign(:employee, %Employee{orgstruct_id: orgstruct.id})
     |> assign(:employee_action, :new)
-    |> assign(:page_title, "New Employee")
-    |> assign(:orgstruct, orgstruct)}
+    #|> assign(:page_title, "New Employee")
+    #|> assign(:orgstruct, orgstruct)
+    }
   end
     
 

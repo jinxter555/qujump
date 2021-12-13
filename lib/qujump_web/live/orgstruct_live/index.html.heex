@@ -6,7 +6,8 @@
     orgstruct: @orgstruct,
     current_user: @current_user,
     parent_orgstruct: @parent_orgstruct,
-    return_to: Routes.orgstruct_index_path(@socket, :index)
+    # return_to: Routes.orgstruct_index_path(@socket, :index)
+    return_to: @return_to
   %>
 <% end %>
 

@@ -8,10 +8,13 @@ orgstruct: @orgstruct,
 orgstruct_id: @orgstruct.id,
 action: @live_action,                    
 current_user: @current_user,
-return_to: Routes.employee_index_path(@socket, :index) %>
+# return_to: Routes.employee_index_path(@socket, :index) 
+return_to: @return_to %>
 <% end %>
 
 
+<div id="employee_list">
+<span><%= live_patch "New Employee", to: Routes.employee_index_path(@socket, :new, @orgstruct) %></span>
 <table>
   <thead>
     <tr>                                                                        
@@ -25,13 +28,12 @@ return_to: Routes.employee_index_path(@socket, :index) %>
         <td><%= employee.name %></td>
         <td>
           <span><%= live_patch "Edit", to: Routes.employee_index_path(@socket, :edit, employee) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: employee.id, data: [confirm: "Are you sure?"] %></span>
+          <span><%= #link "Delete", to: "#", phx_click: "delete", phx_value_id: employee.id, data: [confirm: "Are you sure?"] %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: employee.id %></span>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-
-<span><%= live_patch "add employee", to: Routes.employee_index_path(@socket, :new, @orgstruct) %></span>
-
+</div>

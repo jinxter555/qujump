@@ -38,13 +38,29 @@ Hooks.BsModal = {
     this.el.addEventListener('hidden.bs.modal', event => {
       this.pushEventTo(`#${this.el.getAttribute('id')}`,'close', {})
       modal.dispose()
+      this.unlockScroll() // added scroll unlock jing
     })
 
     this.el.querySelector('form').addEventListener('submit', event => {
       const backdrop = document.querySelector('.modal-backdrop')
       if (backdrop) backdrop.parentElement.removeChild(backdrop)
+      this.unlockScroll() // added scroll unlock jing
     })
+  },
+  unlockScroll() {
+    // From https://github.com/excid3/tailwindcss-stimulus-components/blob/master/src/modal.js
+    // Remove tweaks for scrollbar
+    document.body.style.paddingRight = null
+    // Remove classes from body to unfix position
+    document.body.classList.remove('fix-position')
+    // Restore the scroll position of the body before it got locked
+    document.documentElement.scrollTop = this.scrollPosition
+    // Remove the negative top inline style from body
+    document.body.style.position = '';
+    document.body.style.overflow =''
+    document.body.style.top = null
   }
+
 }
 
 Hooks.BsFieldValidation = {

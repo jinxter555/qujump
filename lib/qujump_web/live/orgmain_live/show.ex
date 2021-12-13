@@ -5,27 +5,48 @@ defmodule QujumpWeb.OrgmainLive.Show do
   on_mount QujumpWeb.AuthUser
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, socket
+    |> assign(:display_employees, false)
+    |> assign(:display_orgstruct_members, false)
+    }
   end
 
   @impl true
-  def handle_params(%{"orgstruct_id" => orgstruct_id}, _, socket) do                        
+  def handle_params(%{"orgstruct_id" => orgstruct_id} = params, _, socket) do                        
+
+    orgstruct = Orgstructs.get_orgstruct!(orgstruct_id)
+
+    display_employees = 
+      if bool(params["display_employees"]),
+        do: bool(params["display_employees"]),
+      else: false
+
+    return_to = params["return_to"] || 
+      Routes.orgmain_show_path(socket, :show, orgstruct, display_employees: display_employees)
 
     {:noreply,
       socket
       |> assign(:pagetitle, page_title(socket.assigns.live_action))
-      |> assign(:orgstruct, Orgstructs.get_orgstruct!(orgstruct_id))}
+      |> assign(:display_employees, display_employees)
+      |> assign(:return_to, return_to)
+      |> assign(:orgstruct, orgstruct)
+    }
   end
 
   @impl true
   def handle_event("list_employees", _, socket) do
-    live_action = if socket.assigns.live_action == :list_employees,
-      do: nil,
-    else: :list_employees
+    display_employees = !socket.assigns.display_employees
+
+    orgstruct = socket.assigns.orgstruct
+
+    return_to = Routes.orgmain_show_path(socket, :show, 
+      orgstruct, display_employees: display_employees)
 
     {:noreply,
       socket
-      |> assign(:live_action, live_action)}
+      |> assign(:return_to, return_to)
+      |> assign(:display_employees, !socket.assigns.display_employees)
+    }
   end
 
   def handle_event("list_orgstruct_members", _, socket) do
@@ -40,5 +61,10 @@ defmodule QujumpWeb.OrgmainLive.Show do
   end
        
   defp page_title(:show), do: "Show Orgstruct"                                 
+
+
+  def bool("true"), do: true
+  def bool("false"), do: false
+  def bool(_), do: false
 
 end

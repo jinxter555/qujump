@@ -28,7 +28,11 @@ defmodule QujumpWeb.ModalComponent do
   @impl true
   def handle_event("close", _params, socket) do
     send_reset(socket)
-    {:noreply, push_patch(socket, to: socket.assigns.return_to)}
+    try do
+      {:noreply, push_patch(socket, to: socket.assigns.return_to) }
+    rescue
+      _ -> {:noreply, push_redirect(socket, to: socket.assigns.return_to) }
+    end
   end
 
   defp send_reset(socket) do

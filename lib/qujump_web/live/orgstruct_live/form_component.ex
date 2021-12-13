@@ -38,15 +38,18 @@ defmodule QujumpWeb.OrgstructLive.FormComponent do
   defp save_orgstruct(socket, :new, orgstruct_params) do
     IO.inspect socket.assigns
 
-    parent_orgstruct = 
+    parent_orgstruct_id = 
       if Map.has_key?(socket.assigns, :parent_orgstruct) do
-        socket.assigns.parent_orgstruct 
+        if socket.assigns.parent_orgstruct == nil,
+          do: nil,
+        else: socket.assigns.parent_orgstruct.id
       else
         nil
       end
 
+
     QujumpWeb.CoreHelper.setup_orgstruct_params(socket, orgstruct_params)
-    |> Orgstructs.create_orgstruct(parent_orgstruct.id)
+    |> Orgstructs.create_orgstruct(parent_orgstruct_id)
     |> case do
       {:ok, _orgstruct} ->
         {:noreply,

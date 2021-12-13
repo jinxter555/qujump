@@ -1,4 +1,4 @@
-                       
+<div id="show_orgmain">
 <ul>                    
   <li>                                                                  
     <strong>Name:</strong>                                     
@@ -16,15 +16,39 @@
           Members                                                             
     </button>    
 
+    <span><%= live_patch "New Team", to: Routes.orgstruct_index_path(@socket, :new, 
+type: :team,
+orgstruct_id: @orgstruct.id,
+return_to: @return_to) %>
+    </span>
 
-  <%= if @live_action == :list_employees && @orgstruct && @orgstruct.type in [:company, :corporate_group] do %>    
-    
-  <.live_component module={EmployeesComponent} id="employee-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} /> 
-<% end %>    
+  <div class="container">
+    <div class="row align-items-start">
 
-<%= if @live_action == :list_orgstruct_members && @orgstruct && @orgstruct.type in [:team] do %>    
-  <.live_component module={MembersComponent} id="members-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} /> 
-<% end %>    
+      <div class="col">
+        <%= OrgstructComponent.list_nested_orgstruct(@orgstruct.id) |> raw() %>
+      </div>
+
+
+      <div class="col">
+        <%= if @display_employees && @orgstruct && @orgstruct.type in [:company, :corporate_group] do %> 
+
+          <%= live_patch "New Employee", to:
+Routes.employee_index_path(@socket, :new, 
+@orgstruct, return_to: @return_to)%>
+
+<.live_component module={EmployeesComponent} id="employee-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} return_to={@return_to}/> 
+         <% end %>    
+
+      </div>
+
+      <div class="col">
+        <%= if @live_action == :list_orgstruct_members && @orgstruct && @orgstruct.type in [:team] do %>    
+          <.live_component module={MembersComponent} id="members-cmp" orgstruct_id={@orgstruct.id} current_user={@current_user} /> 
+        <% end %>    
+      </div>
+    </div>
+  </div>
 
 </ul>                   
-                    
+</div>

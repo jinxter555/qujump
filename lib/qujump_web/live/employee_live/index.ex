@@ -11,7 +11,6 @@ defmodule QujumpWeb.EmployeeLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.puts "hello, world"
     current_employee = AuthUser.get_current_employee(socket)
     orgstruct = Orgstructs.get_orgstruct!(current_employee.orgstruct_id)
     {:ok, 
@@ -33,17 +32,25 @@ defmodule QujumpWeb.EmployeeLive.Index do
   end
 
 
-  defp apply_action(socket, :new, %{"orgstruct_id" => orgstruct_id} =_params) do
+  defp apply_action(socket, :new, %{"orgstruct_id" => orgstruct_id} = params) do
     orgstruct = Orgstructs.get_orgstruct!(orgstruct_id)
+    return_to = params["return_to"] ||
+       Routes.employee_index_path(socket, :index)
+
     socket
     |> assign(:page_title, "New Employee")
+    |> assign(:return_to, return_to)
     |> assign(:employee, %Employee{orgstruct_id: orgstruct_id})
     |> assign(:orgstruct, orgstruct)
   end
 
-  defp apply_action(socket, :edit, %{"id" => id} =_params) do
+  defp apply_action(socket, :edit, %{"id" => id} = params) do
+    return_to = params["return_to"] ||
+       Routes.employee_index_path(socket, :index)
+
     socket
     |> assign(:page_title, "Edit Employee" )
+    |> assign(:return_to, return_to)
     |> assign(:employee, Employees.get_employee!(id))
   end
 
@@ -59,16 +66,16 @@ defmodule QujumpWeb.EmployeeLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    orgstruct_id = 
-      if Map.has_key?(socket.assigns, :orgstruct_id) do
-        socket.assigns.orgstruct_id
-      else
-        nil
-      end
+    #orgstruct_id = 
+    #  if Map.has_key?(socket.assigns, :orgstruct_id) do
+    #    socket.assigns.orgstruct_id
+    #  else
+    #    nil
+    #  end
 
-    employees = if orgstruct_id,
-      do: Employees.list_employees(orgstruct_id: orgstruct_id),
-      else: Employees.list_employees()
+    #employees = if orgstruct_id,
+    #  do: Employees.list_employees(orgstruct_id: orgstruct_id),
+    #  else: Employees.list_employees()
 
     employee = Employees.get_employee!(id)
     {:ok, _} = Employees.delete_employee(employee)
