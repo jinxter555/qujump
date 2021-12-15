@@ -170,31 +170,65 @@ defmodule Qujump.Orgstructs do
       where: e.parent_id == ^orgstruct.entity_id
 
     Repo.all(query)
-
   end
 
-  def list_nested_map(orgstruct_id) do
+  def print_org(orgstruct) do
+    IO.inspect orgstruct.name
+     IO.inspect "id: " <> Integer.to_string(orgstruct.entity_id)
+    if orgstruct.entity.parent_id, 
+      do: IO.inspect "parent: " <> Integer.to_string(orgstruct.entity.parent_id)
+    IO.puts ""
+  end
+
+  def print_nested(orgstruct) do
+    print_org(orgstruct)
+    for child <- orgstruct.children do
+      if Map.has_key?(child, :children) do
+        print_nested(child) 
+      end
+    end
+  end
+
+  def build_nested_orgstruct(orgstruct_id) do
     descents = list_descendants(orgstruct_id)
-    descents
+    nested(descents, nil)
   end
 
-  def build_nested_map([], _, _), do: []
+  defp nested([], _), do: []
 
-  def build_nested_map([head|tail], nil, str) do
+  defp nested([head|_tail]=l, nil) do
+    Map.put(head, :children, nested(l, head.entity_id))
+  end
+
+  defp nested([_head | tail] = _l, parent_id) do
+    children = Enum.map(tail, fn x ->
+      if x.entity.parent_id == parent_id, do:
+      Map.put(x, :children, nested(tail, x.entity_id))
+    end)
+
+    children = Enum.filter(children, 
+      fn child -> child != nil end) 
+
+    children |> List.flatten
+  end
+
+  """
+  def print_nested_map([], _, _), do: []
+  def print_nested_map([head|tail], nil, str) do
     v = str <> inspect head.name
     IO.puts v
-    build_nested_map(tail, head.entity_id, str <> "|---- ")
+    print_nested_map(tail, head.entity_id, str <> "|---- ")
   end
-
-  def build_nested_map([_head| tail] = l, parent_id, str) do
+  def print_nested_map([_head| tail] = l, parent_id, str) do
     Enum.each(l, fn x -> 
       if x.entity.parent_id == parent_id do
         v = str <> inspect x.name
         IO.puts v
-        build_nested_map(tail, x.entity_id, str <> "|---- ")
+        print_nested_map(tail, x.entity_id, str <> "|---- ")
       end
     end)
   end
+  """
   
   def list_descendants(orgstruct_id) do
     orgstruct = get_orgstruct!(orgstruct_id)
